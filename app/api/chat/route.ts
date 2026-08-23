@@ -2,9 +2,10 @@ import OpenAI from "openai";
 
 export const runtime = "nodejs";
 
+const MAX_BODY_CHARS = 100_000;
 const MAX_MESSAGES = 24;
 const MAX_MESSAGE_CHARS = 8000;
-const MAX_TOTAL_CHARS = 50000;
+const MAX_TOTAL_CHARS = 50_000;
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -37,6 +38,42 @@ function validateMessages(value: unknown): ChatMessage[] | null {
   return messages;
 }
 
+function providerStatus(error: unknown) {
+  if (!error || typeof error !== "object" || !("status" in error)) return null;
+  const status = (error as { status?: unknown }).status;
+  return typeof status === "number" ? status : null;
+}
+
+function providerError(error: unknown) {
+  const status = providerStatus(error);
+
+  if (status === 401 || status === 403) {
+    return Response.json(
+      { error: "The server AI credentials are invalid or do not have access to this model." },
+      { status: 503 },
+    );
+  }
+
+  if (status === 429) {
+    return Response.json(
+      { error: "The AI provider rate limit or spend limit was reached. Try again later." },
+      { status: 429 },
+    );
+  }
+
+  if (status !== null && status >= 400 && status < 500) {
+    return Response.json(
+      { error: "The AI provider rejected this request. Check the configured model and account access." },
+      { status: 502 },
+    );
+  }
+
+  return Response.json(
+    { error: "The AI provider is temporarily unavailable." },
+    { status: 502 },
+  );
+}
+
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   const model = process.env.OPENAI_MODEL?.trim() || "gpt-5.6-luna";
@@ -48,8 +85,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const body = await request.json().catch(() => null);
-  const messages = validateMessages(body?.messages);
+  const rawBody = await request.text();
+  if (rawBody.length > MAX_BODY_CHARS) {
+    return Response.json({ error: "Conversation payload is too large." }, { status: 413 });
+  }
+
+  let body: unknown;
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
+  }
+
+  const candidate = body && typeof body === "object" ? body as Record<string, unknown> : null;
+  const messages = validateMessages(candidate?.messages);
 
   if (!messages) {
     return Response.json({ error: "Invalid conversation payload." }, { status: 400 });
@@ -101,6 +150,6 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("ZeteChat upstream request failed", error);
-    return Response.json({ error: "The AI provider request failed." }, { status: 502 });
+    return providerError(error);
   }
 }

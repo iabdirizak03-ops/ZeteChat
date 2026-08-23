@@ -22,12 +22,14 @@ body {
 
 body,
 button,
-textarea {
+textarea,
+input {
   font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 button,
-textarea {
+textarea,
+input {
   font: inherit;
 }
 
@@ -40,18 +42,28 @@ button:disabled {
   opacity: 0.45;
 }
 
+button:focus-visible,
+textarea:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
 .appShell {
   min-height: 100dvh;
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-columns: 270px minmax(0, 1fr);
   background: var(--background);
 }
 
 .sidebar {
   position: sticky;
   top: 0;
+  z-index: 20;
   height: 100dvh;
-  padding: 22px 16px 18px;
+  min-width: 0;
+  padding: 22px 14px 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -60,9 +72,15 @@ button:disabled {
 }
 
 .sidebarTop {
+  min-height: 0;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
+}
+
+.mobileSidebarHeader {
+  display: none;
 }
 
 .brandBlock {
@@ -110,14 +128,16 @@ button:disabled {
   border-color: #cecece;
 }
 
-.newChatButton span {
+.newChatButton > span {
   font-size: 19px;
   font-weight: 400;
   line-height: 1;
 }
 
 .sidebarNav {
+  min-height: 0;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 7px;
 }
@@ -131,27 +151,115 @@ button:disabled {
   text-transform: uppercase;
 }
 
-.navItem {
-  padding: 10px;
+.chatList {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.chatRow {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   border-radius: 9px;
+}
+
+.chatRow.active {
+  background: #ededed;
+}
+
+.chatSelect {
+  min-width: 0;
+  min-height: 38px;
+  flex: 1;
+  border: 0;
+  padding: 0 9px;
+  overflow: hidden;
+  background: transparent;
   color: #4d4d4d;
   font-size: 13px;
-  overflow: hidden;
+  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.navItem.active {
-  background: #ededed;
+.chatRow.active .chatSelect {
   color: var(--foreground);
-  font-weight: 600;
+  font-weight: 650;
+}
+
+.chatActions {
+  display: flex;
+  gap: 2px;
+  padding-right: 5px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.chatRow:hover .chatActions,
+.chatRow:focus-within .chatActions {
+  opacity: 1;
+}
+
+.chatActions button {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.chatActions button:hover {
+  background: #dfdfdf;
+  color: var(--foreground);
+}
+
+.renameInput {
+  min-width: 0;
+  height: 34px;
+  flex: 1;
+  margin: 2px 5px;
+  border: 1px solid #bdbdbd;
+  border-radius: 7px;
+  padding: 0 8px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+}
+
+.loadingChats {
+  padding: 10px;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .sidebarFooter {
-  padding: 0 8px;
+  padding: 12px 8px 0;
   color: var(--muted);
   font-size: 11px;
   line-height: 1.45;
+}
+
+.textButton,
+.menuButton {
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.sidebarBackdrop {
+  display: none;
 }
 
 .chatPanel {
@@ -162,6 +270,9 @@ button:disabled {
 }
 
 .chatHeader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   min-height: 66px;
   padding: 0 28px;
   display: flex;
@@ -173,17 +284,34 @@ button:disabled {
   backdrop-filter: blur(12px);
 }
 
-.chatHeader h1 {
-  margin: 0;
-  font-size: 15px;
-  letter-spacing: -0.02em;
+.headerIdentity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.mobileWordmark {
+.headerIdentity > div {
+  min-width: 0;
+}
+
+.chatHeader h1 {
+  margin: 0;
+  max-width: min(58vw, 620px);
+  overflow: hidden;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileWordmark,
+.menuButton {
   display: none;
 }
 
 .status {
+  flex: 0 0 auto;
   color: var(--muted);
   font-size: 12px;
 }
@@ -209,8 +337,7 @@ button:disabled {
 
 .emptyState h2,
 .emptyState p,
-.hint,
-.error {
+.hint {
   margin: 0;
 }
 
@@ -227,7 +354,7 @@ button:disabled {
 }
 
 .messages {
-  width: min(800px, calc(100% - 48px));
+  width: min(820px, calc(100% - 48px));
   margin: 0 auto;
   padding: 40px 0 28px;
 }
@@ -252,32 +379,171 @@ button:disabled {
 }
 
 .messageText {
-  white-space: pre-wrap;
+  min-width: 0;
   overflow-wrap: anywhere;
   line-height: 1.72;
   font-size: 15px;
 }
 
 .message.user .messageText {
+  white-space: pre-wrap;
   font-weight: 550;
 }
 
-.cursor {
-  display: inline-block;
-  width: 7px;
-  height: 16px;
-  background: var(--foreground);
-  vertical-align: -2px;
-  animation: blink 1s step-end infinite;
+.messageText > :first-child {
+  margin-top: 0;
+}
+
+.messageText > :last-child {
+  margin-bottom: 0;
+}
+
+.messageText p,
+.messageText ul,
+.messageText ol,
+.messageText blockquote,
+.messageText table,
+.messageText pre {
+  margin: 0 0 14px;
+}
+
+.messageText h1,
+.messageText h2,
+.messageText h3 {
+  margin: 22px 0 10px;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.messageText h1 {
+  font-size: 22px;
+}
+
+.messageText h2 {
+  font-size: 19px;
+}
+
+.messageText h3 {
+  font-size: 16px;
+}
+
+.messageText ul,
+.messageText ol {
+  padding-left: 22px;
+}
+
+.messageText li + li {
+  margin-top: 5px;
+}
+
+.messageText blockquote {
+  border-left: 3px solid #d6d6d6;
+  padding-left: 14px;
+  color: #555555;
+}
+
+.messageText a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.messageText code {
+  border-radius: 5px;
+  padding: 2px 5px;
+  background: #f0f0f0;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.9em;
+}
+
+.codeBlock {
+  margin: 14px 0;
+  overflow: hidden;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  background: #111111;
+}
+
+.codeBlockBar {
+  min-height: 38px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #2c2c2c;
+  color: #a8a8a8;
+  font-size: 11px;
+}
+
+.codeBlockBar button {
+  border: 0;
+  background: transparent;
+  color: #e8e8e8;
+  font-size: 11px;
+}
+
+.codeBlock pre {
+  margin: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 16px;
+  color: #f5f5f5;
+  background: #111111;
+  line-height: 1.55;
+}
+
+.codeBlock pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+}
+
+.messageText table {
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.messageText th,
+.messageText td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.typingDots {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.typingDots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #7a7a7a;
+  animation: typing 1.1s infinite ease-in-out;
+}
+
+.typingDots span:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.typingDots span:nth-child(3) {
+  animation-delay: 240ms;
 }
 
 .composerArea {
   position: sticky;
   bottom: 0;
-  width: min(820px, calc(100% - 48px));
+  width: min(840px, calc(100% - 48px));
   margin: 0 auto;
   padding: 16px 0 20px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 24%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff 24%);
 }
 
 .composer {
@@ -299,7 +565,8 @@ textarea {
   width: 100%;
   min-height: 42px;
   max-height: 180px;
-  resize: vertical;
+  resize: none;
+  overflow-y: auto;
   border: 0;
   outline: 0;
   padding: 10px 8px;
@@ -328,19 +595,62 @@ textarea::placeholder {
   text-align: center;
 }
 
-.error {
+.notice {
   margin-bottom: 8px;
   padding: 10px 12px;
-  border: 1px solid #e3b5b5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #dedede;
   border-radius: 10px;
-  color: #8a1c1c;
-  background: #fff8f8;
+  background: #fafafa;
   font-size: 13px;
 }
 
-@keyframes blink {
-  50% {
-    opacity: 0;
+.notice.error {
+  border-color: #e3b5b5;
+  color: #8a1c1c;
+  background: #fff8f8;
+}
+
+.notice.warning {
+  color: #604a12;
+  background: #fffdf4;
+}
+
+.notice button {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
   }
 }
 
@@ -349,39 +659,61 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
 
-  .sidebar {
-    position: static;
-    height: auto;
-    min-height: 0;
-    padding: 14px 16px;
-    flex-direction: row;
-    align-items: center;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+  .sidebarBackdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: block;
+    border: 0;
+    background: rgba(0, 0, 0, 0.32);
   }
 
-  .sidebarTop {
-    width: 100%;
-    flex-direction: row;
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    width: min(86vw, 310px);
+    height: 100dvh;
+    padding: 16px 14px;
+    border-right: 1px solid var(--line);
+    transform: translateX(-102%);
+    transition: transform 180ms ease;
+    box-shadow: 16px 0 40px rgba(0, 0, 0, 0.08);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobileSidebarHeader {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    padding: 0 8px;
   }
 
-  .brandBlock,
-  .sidebarNav,
-  .sidebarFooter {
+  .brandBlock {
     display: none;
   }
 
-  .newChatButton {
-    width: auto;
-    margin-left: auto;
+  .chatActions {
+    opacity: 1;
   }
 
   .chatHeader {
     min-height: 60px;
-    padding: 0 18px;
+    padding: 0 16px;
+  }
+
+  .menuButton {
+    display: inline-flex;
+    min-height: 34px;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 9px;
+    background: var(--background);
   }
 
   .mobileWordmark {
@@ -391,8 +723,9 @@ textarea::placeholder {
   }
 
   .chatHeader h1 {
-    font-size: 12px;
+    max-width: 55vw;
     color: var(--muted);
+    font-size: 12px;
   }
 
   .messages,
@@ -422,5 +755,6 @@ textarea::placeholder {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

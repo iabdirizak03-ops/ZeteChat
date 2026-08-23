@@ -61,7 +61,8 @@ export async function POST(request: Request) {
     const upstream = await client.responses.create(
       {
         model,
-        instructions: "You are ZeteChat, a concise and helpful AI assistant. Be accurate, clear, and honest about uncertainty.",
+        instructions:
+          "You are ZeteChat, a concise and helpful AI assistant. Be accurate, clear, and honest about uncertainty.",
         input: messages,
         stream: true,
       },
@@ -78,14 +79,16 @@ export async function POST(request: Request) {
               controller.enqueue(encoder.encode(event.delta));
             }
           }
+
+          controller.close();
         } catch (error) {
-          if (!request.signal.aborted) controller.error(error);
-        } finally {
-          if (!request.signal.aborted) controller.close();
+          if (request.signal.aborted) {
+            controller.close();
+            return;
+          }
+
+          controller.error(error);
         }
-      },
-      cancel() {
-        request.signal.throwIfAborted();
       },
     });
 

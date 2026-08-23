@@ -35,9 +35,9 @@ Requirements:
 * Node.js 22 or newer
 * An OpenAI API key
 
+Clone this repository from GitHub, open the project folder, then run:
+
 ```bash
-git clone https://github.com/iabdirizak03-ops/ZeteChat.git
-cd ZeteChat
 npm install
 cp .env.example .env.local
 ```
@@ -46,7 +46,6 @@ Add your key to `.env.local`:
 
 ```env
 OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=gpt-5.6-luna
 ```
 
 Then run:

@@ -2,38 +2,38 @@
 
 A small, readable AI chat starter built by **Zetemora**.
 
-ZeteChat is intentionally narrow. It provides a clean chat interface, a server-side AI route, streaming responses, local browser history, and a simple foundation developers can understand and change.
+ZeteChat is intentionally narrow. It provides a clean chat interface, an AI route on the server, streaming responses, local browser history, and a simple foundation developers can understand and change.
 
 ## Status
 
 **v0.2 starter**
 
-The repository contains an early runnable application. It should not be treated as a production-ready hosted service without additional controls.
+The repository contains an early runnable application. It should not be treated as a hosted service ready for production without additional controls.
 
 ## What is included
 
-- Next.js + TypeScript
-- Responsive sidebar chat interface
-- Local conversation history in the browser
-- Rename and delete local chats
-- Markdown and GitHub Flavored Markdown rendering
-- Copyable code blocks
-- Streaming model responses with stop control
-- Auto-growing message composer
-- Server-side OpenAI API key handling
-- Bounded recent model context for longer local chats
-- Conversation input validation and request-size limits
-- Clear provider configuration and rate-limit errors
-- Mobile chat-history drawer
-- No database, authentication, billing, tracking, or hidden infrastructure
-- CI typecheck and production build verification
+* Next.js + TypeScript
+* Responsive sidebar chat interface
+* Local conversation history in the browser
+* Rename and delete local chats
+* Markdown and GitHub Flavored Markdown rendering
+* Copyable code blocks
+* Streaming model responses with stop control
+* Message composer that grows automatically
+* OpenAI API key handling on the server
+* Bounded recent model context for longer local chats
+* Conversation input validation and request size limits
+* Clear provider configuration and rate limit errors
+* Mobile chat history drawer
+* No database, authentication, billing, tracking, or hidden infrastructure
+* CI typecheck and production build verification
 
 ## Quick start
 
 Requirements:
 
-- Node.js 22 or newer
-- An OpenAI API key
+* Node.js 22 or newer
+* An OpenAI API key
 
 ```bash
 git clone https://github.com/iabdirizak03-ops/ZeteChat.git
@@ -61,7 +61,7 @@ Open `http://localhost:3000`.
 
 ZeteChat does not require a database. Conversation history is stored in the current browser using `localStorage`.
 
-That means history does not automatically sync across devices or browsers, and clearing site data can remove it. Prompts sent to the AI are still transmitted to the configured model provider. Local history is not a claim that model requests stay on-device.
+That means history does not automatically sync across devices or browsers, and clearing site data can remove it. Prompts sent to the AI are still transmitted to the configured model provider. Local history is not a claim that model requests stay only on the device.
 
 The UI can retain a longer local conversation, while the server request remains bounded. ZeteChat sends only a recent context window of up to 24 messages and applies character limits before the provider call.
 
@@ -73,9 +73,9 @@ The current provider implementation uses the OpenAI Responses API. If you want a
 
 ## Security notes
 
-Never commit `.env.local`, API keys, database credentials, service-role keys, access tokens, or private user data.
+Never commit `.env.local`, API keys, database credentials, service role keys, access tokens, or private user data.
 
-The included API route validates message roles, message sizes, total conversation size, raw request size, and requires the final message to come from the user. These checks are useful boundaries, not a complete abuse-prevention system.
+The included API route validates message roles, message sizes, total conversation size, raw request size, and requires the final message to come from the user. These checks are useful boundaries, not a complete system for preventing abuse.
 
 If you deploy ZeteChat publicly with your own paid model key, add appropriate authentication, rate limiting, spend controls, monitoring, and abuse protections first. Otherwise strangers may be able to consume your API budget.
 

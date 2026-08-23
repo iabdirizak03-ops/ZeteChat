@@ -72,9 +72,9 @@ Small, focused contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBU
 
 ## License
 
-No open-source license has been selected yet. Public visibility on GitHub does not itself grant permission to copy, redistribute, or create derivative works.
+ZeteChat is licensed under the [MIT License](LICENSE).
 
-A license can be added later when the project owner chooses the terms.
+Copyright (c) 2026 Zetemora.
 
 ## About
 

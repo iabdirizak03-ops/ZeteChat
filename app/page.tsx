@@ -108,64 +108,89 @@ export default function Home() {
   }
 
   return (
-    <main className="shell">
-      <header className="header">
-        <div>
-          <p className="eyebrow">Zetemora</p>
-          <h1>ZeteChat</h1>
+    <main className="appShell">
+      <aside className="sidebar">
+        <div className="sidebarTop">
+          <div className="brandBlock">
+            <span className="wordmark">zetemora</span>
+            <span className="productName">ZeteChat</span>
+          </div>
+
+          <button className="newChatButton" type="button" onClick={newChat}>
+            <span aria-hidden="true">+</span>
+            New chat
+          </button>
+
+          <nav className="sidebarNav" aria-label="Chat navigation">
+            <div className="navLabel">Chat</div>
+            <div className="navItem active" aria-current="page">
+              Current conversation
+            </div>
+          </nav>
         </div>
-        <button className="secondaryButton" type="button" onClick={newChat} disabled={messages.length === 0}>
-          New chat
-        </button>
-      </header>
 
-      <section className="conversation" aria-live="polite">
-        {messages.length === 0 ? (
-          <div className="emptyState">
-            <span className="mark" aria-hidden="true">Z</span>
-            <h2>What can I help with?</h2>
-            <p>A minimal AI chat starter. Your API key stays on the server.</p>
-          </div>
-        ) : (
-          <div className="messages">
-            {messages.map((message) => (
-              <article className={`message ${message.role}`} key={message.id}>
-                <span className="role">{message.role === "user" ? "You" : "ZeteChat"}</span>
-                <div className="messageText">
-                  {message.content || (isGenerating ? <span className="cursor" aria-label="Generating" /> : null)}
-                </div>
-              </article>
-            ))}
-            <div ref={bottomRef} />
-          </div>
-        )}
-      </section>
+        <div className="sidebarFooter">
+          <span>Open-source AI chat starter</span>
+        </div>
+      </aside>
 
-      <div className="composerArea">
-        {error ? <p className="error" role="alert">{error}</p> : null}
-        <form className="composer" onSubmit={sendMessage}>
-          <textarea
-            aria-label="Message"
-            placeholder="Message ZeteChat"
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            onKeyDown={handleKeyDown}
-            rows={1}
-            maxLength={8000}
-            disabled={isGenerating}
-          />
-          {isGenerating ? (
-            <button className="sendButton" type="button" onClick={() => abortRef.current?.abort()} aria-label="Stop generating">
-              Stop
-            </button>
+      <section className="chatPanel">
+        <header className="chatHeader">
+          <div>
+            <span className="mobileWordmark">zetemora</span>
+            <h1>ZeteChat</h1>
+          </div>
+          <span className="status">AI chat</span>
+        </header>
+
+        <section className="conversation" aria-live="polite">
+          {messages.length === 0 ? (
+            <div className="emptyState">
+              <span className="emptyWordmark">zetemora</span>
+              <h2>What can I help with?</h2>
+              <p>A clean AI chat starter with server-side API access.</p>
+            </div>
           ) : (
-            <button className="sendButton" type="submit" disabled={!input.trim()}>
-              Send
-            </button>
+            <div className="messages">
+              {messages.map((message) => (
+                <article className={`message ${message.role}`} key={message.id}>
+                  <span className="role">{message.role === "user" ? "You" : "ZeteChat"}</span>
+                  <div className="messageText">
+                    {message.content || (isGenerating ? <span className="cursor" aria-label="Generating" /> : null)}
+                  </div>
+                </article>
+              ))}
+              <div ref={bottomRef} />
+            </div>
           )}
-        </form>
-        <p className="hint">Enter to send. Shift + Enter for a new line.</p>
-      </div>
+        </section>
+
+        <div className="composerArea">
+          {error ? <p className="error" role="alert">{error}</p> : null}
+          <form className="composer" onSubmit={sendMessage}>
+            <textarea
+              aria-label="Message"
+              placeholder="Message ZeteChat"
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              onKeyDown={handleKeyDown}
+              rows={1}
+              maxLength={8000}
+              disabled={isGenerating}
+            />
+            {isGenerating ? (
+              <button className="sendButton" type="button" onClick={() => abortRef.current?.abort()} aria-label="Stop generating">
+                Stop
+              </button>
+            ) : (
+              <button className="sendButton" type="submit" disabled={!input.trim()}>
+                Send
+              </button>
+            )}
+          </form>
+          <p className="hint">Enter to send. Shift + Enter for a new line.</p>
+        </div>
+      </section>
     </main>
   );
 }

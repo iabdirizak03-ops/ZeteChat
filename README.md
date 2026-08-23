@@ -1,59 +1,83 @@
 # ZeteChat
 
-A public AI chat project by Zetemora.
+A small, readable AI chat starter built by **Zetemora**.
 
-ZeteChat is an early-stage project focused on building a simple, clear, and developer-friendly foundation for AI chat experiences.
+ZeteChat is intentionally narrow. It provides a clean chat interface, a server-side AI route, streaming responses, basic request validation, and a simple foundation developers can understand and change.
 
 ## Status
 
-**Early development.** The repository is being prepared in public. Application code has not yet been published.
+**v0.1 starter**
 
-This README intentionally separates what exists today from what is planned.
+The repository now contains a runnable application. It is still early software and should not be treated as a production-ready hosted service without additional controls.
 
-## Goals
+## What is included
 
-ZeteChat aims to provide a clean foundation for developers who want to build AI chat experiences without unnecessary complexity.
+- Next.js + TypeScript
+- Minimal responsive chat interface
+- Streaming model responses
+- Server-side OpenAI API key handling
+- Conversation input validation and size limits
+- Stop generation and new chat controls
+- No database, authentication, billing, tracking, or hidden infrastructure
+- CI typecheck and production build verification
 
-Core principles:
+## Quick start
 
-- Simple by default
-- Clear user experience
-- Responsible AI integration
-- Secure handling of credentials and user data
-- Provider flexibility where practical
-- Honest documentation about limitations and project status
+Requirements:
 
-## Planned direction
+- Node.js 22 or newer
+- An OpenAI API key
 
-The project may include:
+```bash
+git clone https://github.com/iabdirizak03-ops/ZeteChat.git
+cd ZeteChat
+npm install
+cp .env.example .env.local
+```
 
-- A clean chat interface
-- Streaming responses
-- Conversation history
-- Model and provider adapters
-- Markdown and code rendering
-- File and image support where appropriate
-- Accessible keyboard and mobile interactions
-- Examples for safe server-side AI integration
+Add your key to `.env.local`:
 
-These are plans, not claims about the current implementation.
+```env
+OPENAI_API_KEY=your_key_here
+OPENAI_MODEL=gpt-5.6-luna
+```
 
-## Security
+Then run:
 
-Never commit API keys, tokens, database credentials, service-role keys, or other secrets to this repository.
+```bash
+npm run dev
+```
 
-If you discover a security issue, please follow the instructions in [SECURITY.md](SECURITY.md) and avoid posting sensitive details in a public issue.
+Open `http://localhost:3000`.
+
+## Architecture
+
+The browser sends the current conversation to `POST /api/chat`. The server validates the payload and calls the model provider. The provider API key is read only from the server environment and is never intentionally sent to the browser.
+
+The current provider implementation uses the OpenAI Responses API. If you want another provider, replace the implementation in `app/api/chat/route.ts` while keeping the browser contract small.
+
+## Security notes
+
+Never commit `.env.local`, API keys, database credentials, service-role keys, access tokens, or private user data.
+
+The included API route validates message roles, message sizes, total conversation size, and requires the final message to come from the user. These checks are useful boundaries, not a complete abuse-prevention system.
+
+If you deploy ZeteChat publicly with your own paid model key, add appropriate authentication, rate limiting, spend controls, monitoring, and abuse protections first. Otherwise strangers may be able to consume your API budget.
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting guidance.
 
 ## Contributing
 
-ZeteChat is being built in public. Contributions, bug reports, and thoughtful suggestions are welcome as the codebase develops.
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
-
-## Project ownership
-
-ZeteChat is a Zetemora project.
+Small, focused contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
 ## License
 
-A software license has not yet been selected. Until a license is added, publishing this repository publicly does not grant permission to copy, modify, or redistribute the code.
+No open-source license has been selected yet. Public visibility on GitHub does not itself grant permission to copy, redistribute, or create derivative works.
+
+A license can be added later when the project owner chooses the terms.
+
+## About
+
+ZeteChat is a public developer project by **Zetemora**.
+
+Build useful things. Keep them understandable.
